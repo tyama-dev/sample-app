@@ -25,5 +25,37 @@ services:
     depends_on:
       - db
 
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      DATABASE_URL: postgres://app_user:app_pass@db:5432/app
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_BETTER_AUTH_URL: http://localhost:3000
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+      KEYCLOAK_ISSUER: http://keycloak:8080/realms/sample-app
+      KEYCLOAK_ISSUER_PUBLIC: http://localhost:8080/realms/sample-app
+      HONO_API_URL: http://api:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - keycloak
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      KEYCLOAK_ISSUER: http://keycloak:8080/realms/sample-app
+      KEYCLOAK_ISSUER_PUBLIC: http://localhost:8080/realms/sample-app
+    ports:
+      - "3001:3001"
+    depends_on:
+      - keycloak
+
 volumes:
   db-data:

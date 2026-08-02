@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { genericOAuth, keycloak } from "better-auth/plugins";
+import { genericOAuth } from "better-auth/plugins";
 import { db, schema } from "@repo/db";
 import { nextCookies } from "better-auth/next-js";
 
@@ -14,12 +14,16 @@ export const auth = betterAuth({
   plugins: [
     genericOAuth({
       config: [
-        keycloak({
+        {
+          providerId: "keycloak",
           clientId: process.env.KEYCLOAK_CLIENT_ID!,
           clientSecret: process.env.KEYCLOAK_CLIENT_SECRET!,
-          issuer: process.env.KEYCLOAK_ISSUER!,
+          authorizationUrl: `${process.env.KEYCLOAK_ISSUER_PUBLIC}/protocol/openid-connect/auth`,
+          tokenUrl: `${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/token`,
+          userInfoUrl: `${process.env.KEYCLOAK_ISSUER}/protocol/openid-connect/userinfo`,
+          scopes: ["openid", "profile", "email"],
           pkce: true,
-        }),
+        },
       ],
     }),
     nextCookies(),

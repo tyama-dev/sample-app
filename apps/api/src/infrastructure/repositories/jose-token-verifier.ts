@@ -16,8 +16,10 @@ function getJwks() {
 
 export const joseTokenVerifier: TokenVerifier = {
   async verify(token) {
-    const issuer = process.env.KEYCLOAK_ISSUER!;
-    const { payload } = await jwtVerify(token, getJwks(), { issuer });
+    const expectedIssuer = process.env.KEYCLOAK_ISSUER_PUBLIC!;
+    const { payload } = await jwtVerify(token, getJwks(), {
+      issuer: expectedIssuer,
+    });
     return payload as TokenPayload;
   },
 };
