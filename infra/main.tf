@@ -7,3 +7,7 @@ module "ecr_api" {
   source          = "./modules/ecr"
   repository_name = "sample-app-api"
 }
+
+module "network" {
+  source = "./modules/network"
+}
