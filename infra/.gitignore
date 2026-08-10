@@ -1,0 +1,14 @@
+# プロバイダのバイナリ(terraform initで再生成される)
+.terraform/
+
+# 状態ファイル(秘密情報を含みうる、マシン間で競合する)
+*.tfstate
+*.tfstate.*
+
+# クラッシュログ
+crash.log
+crash.*.log
+
+# 変数ファイル(秘密情報を含みうる)
+*.tfvars
+*.tfvars.json
