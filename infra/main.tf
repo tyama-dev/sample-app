@@ -11,3 +11,10 @@ module "ecr_api" {
 module "network" {
   source = "./modules/network"
 }
+
+module "database" {
+  source     = "./modules/database"
+  vpc_id     = module.network.vpc_id
+  subnet_ids = module.network.public_subnet_ids
+  vpc_cidr   = "10.0.0.0/16"
+}
