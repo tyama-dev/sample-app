@@ -20,6 +20,14 @@ resource "aws_security_group" "db" {
     cidr_blocks = [var.vpc_cidr]
   }
 
+  ingress {
+    description = "PostgreSQL from local machine (bootstrap)"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -40,6 +48,7 @@ resource "aws_db_instance" "this" {
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids = [aws_security_group.db.id]
   skip_final_snapshot    = true
+  publicly_accessible    = true
 }
 
 resource "aws_secretsmanager_secret" "db_master" {
@@ -55,4 +64,8 @@ resource "aws_secretsmanager_secret_version" "db_master" {
     host     = aws_db_instance.this.address
     port     = aws_db_instance.this.port
   })
+}
+
+data "http" "my_ip" {
+  url = "https://checkip.amazonaws.com"
 }

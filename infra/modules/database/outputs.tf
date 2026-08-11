@@ -9,3 +9,8 @@ output "db_security_group_id" {
 output "db_master_secret_arn" {
   value = aws_secretsmanager_secret.db_master.arn
 }
+
+output "db_master_password" {
+  value     = random_password.master.result
+  sensitive = true
+}
