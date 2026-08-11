@@ -43,7 +43,8 @@ resource "aws_db_instance" "this" {
 }
 
 resource "aws_secretsmanager_secret" "db_master" {
-  name = "sample-app/db-master"
+  name                    = "sample-app/db-master"
+  recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "db_master" {
