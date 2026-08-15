@@ -22,3 +22,21 @@ module "database" {
 module "iam" {
   source = "./modules/iam"
 }
+
+module "log_web" {
+  source             = "./modules/logs"
+  name               = "/ecs/sample-app-web"
+  retention_in_days  = 7
+}
+
+module "log_api" {
+  source             = "./modules/logs"
+  name               = "/ecs/sample-app-api"
+  retention_in_days  = 7
+}
+
+module "log_keycloak" {
+  source             = "./modules/logs"
+  name               = "/ecs/sample-app-keycloak"
+  retention_in_days  = 7
+}
