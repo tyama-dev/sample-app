@@ -55,3 +55,24 @@ module "service_discovery" {
   source = "./modules/service-discovery"
   vpc_id = module.network.vpc_id
 }
+
+module "ecs_api" {
+  source               = "./modules/ecs-service"
+  name                 = "sample-app-api"
+  cluster_id           = module.ecs_cluster.cluster_id
+  image                = "${module.ecr_api.repository_url}:latest"
+  cpu                  = 256
+  memory               = 512
+  container_port       = 3001
+  execution_role_arn   = module.iam.execution_role_arn
+  task_role_arn        = module.iam.task_role_arn
+  log_group_name       = module.log_api.name
+  region               = "ap-northeast-1"
+  subnet_ids           = module.network.public_subnet_ids
+  security_group_ids   = [module.security.api_sg_id]
+  service_registry_arn = module.service_discovery.api_service_arn
+
+  environment = [
+    { name = "KEYCLOAK_ISSUER", value = "http://keycloak.sample-app.local:8080/realms/sample-app" },
+  ]
+}
