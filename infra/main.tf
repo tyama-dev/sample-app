@@ -76,3 +76,23 @@ module "ecs_api" {
     { name = "KEYCLOAK_ISSUER", value = "http://keycloak.sample-app.local:8080/realms/sample-app" },
   ]
 }
+
+module "alb_web" {
+  source             = "./modules/alb"
+  name               = "sample-app-web-alb"
+  vpc_id             = module.network.vpc_id
+  subnet_ids         = module.network.public_subnet_ids
+  security_group_ids = [module.security.alb_sg_id]
+  target_port        = 3000
+  health_check_path  = "/"
+}
+
+module "alb_keycloak" {
+  source             = "./modules/alb"
+  name               = "sample-app-keycloak-alb"
+  vpc_id             = module.network.vpc_id
+  subnet_ids         = module.network.public_subnet_ids
+  security_group_ids = [module.security.alb_sg_id]
+  target_port        = 8080
+  health_check_path  = "/realms/sample-app/.well-known/openid-configuration"
+}
