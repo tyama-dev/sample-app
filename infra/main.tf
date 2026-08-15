@@ -18,3 +18,7 @@ module "database" {
   subnet_ids = module.network.public_subnet_ids
   vpc_cidr   = "10.0.0.0/16"
 }
+
+module "iam" {
+  source = "./modules/iam"
+}
